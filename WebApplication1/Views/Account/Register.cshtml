@@ -1,0 +1,133 @@
+﻿@model   WebApplication1.Models.Movies
+@{
+    ViewBag.Title = "Register";
+}
+<script type="text/javascript">
+    var DepartmentSetup = function () {
+        $("#btnUpdate").hide();
+        $("#btnSave").show();
+        $("#myModal").modal('show');
+    }
+    function EditDepartment(departmentID) {
+       
+        $.ajax({
+            type: "GET",
+            url: "/Account/EditDepartment",
+            data: { departmentID: 1 },
+            success: function (response) {
+                $("#txtAbbreviation").val(response.Id);
+                $("#txtDepartment").val(response.Name);
+                $("#btnSave").hide();
+                $("#btnUpdate").show();
+                $("#myModal").modal('show');
+            }
+        })
+    }
+</script>
+<h2>Test</h2>
+
+<table>
+    @foreach (var item in Model.LstMovie)
+    {
+        <tr>
+            <td>
+                @item.Id
+            </td>
+            <td>
+                @item.Name
+            </td>
+           
+        </tr>
+    }
+</table>
+
+<div class="container border-top-blue">
+    <div class="row">
+        <div class="col-md-12 col-lg-12" style="padding:5px">
+            <div class="btn-group" style="float:right">
+                <a href="#" class="btn btn-first" onclick="DepartmentSetup()">New Record</a> <a href="#" class="ml-3 btn btn-skyblue">Print</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <table class="row">
+                <thead class="col-md-12 col-lg-12">
+                    <tr class="row pt-2 pb-2 table-header">
+                        <th class="col-md-4 col-lg-4">ID</th>
+                        <th class="col-md-4 col-lg-4">Name</th>
+                    </tr>
+                </thead>
+                <tbody class="col-md-12 col-lg-12" id="datalist">
+                    @if (Model.LstMovie.Count>0)
+                    {
+                        foreach (var model in Model.LstMovie)
+                        {
+                            using (Html.BeginForm())
+                            {
+                                <tr class="row table-item">
+                                    <td class="col-md-4 col-lg-4">@Html.DisplayFor(m => model.Id)</td>
+                                    <td class="col-md-4 col-lg-4">@Html.DisplayFor(m => model.Name)</td>
+                                   
+                                    <td class="col-md-2 col-lg-2">
+                                        <a href="#" onclick="EditDepartment(@Convert.ToInt32(model.Id))">Edit</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <tr class="row">
+                            <td class="col-md-12 col-lg-12">
+                                <label class="text-center text-nodata">There is no data found...</label>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="data_input">
+                <div class="modal-header">
+                    <label class="dialog-title">Testing Setup</label>
+                    @Html.HiddenFor(model => model.Id, new { @id = "txtDepartmentID" })
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Id, new { @class = "control-label" })
+                                @Html.TextBoxFor(model => model.Name, new { @class = "form-control text-input", @id = "txtAbbreviation" })
+                               @*@Html.ValidationMessageFor(model => model.Abbreviation, "", new { @class = "text-danger" })*@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Name, new { @class = "control-label" })
+                                @Html.TextBoxFor(model => model.Name, new { @class = "form-control text-input", @id = "txtDepartment" })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12 pr-5">
+                            <input type="button" value="Cancel" class="btn btn-gray" data-dismiss="modal" />
+                            <input type="button" value="Save" onclick="InsertDepartment();" id="btnSave" class="btn btn-first mr-3" />
+                            <input type="button" value="Update" onclick="UpdateDepartment();" class="btn btn-first" id="btnUpdate" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
